@@ -1,21 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 
 
-def f1(x, y):
+def F1(x, y):
     return x - y
 
 
-def f2(x, y):
+def F2(x, y):
     return x + y
 
 
-def f3(x, y):
+def F3(x, y):
     return -(x ** 2) + y
 
 
-def f4(x, y):
+def F4(x, y):
     return -x - (y ** 2)
 
 
@@ -23,28 +22,14 @@ def zz(xx, yy, l, ff1, ff2):
     return l * ff1(xx, yy) + (1 - l) * ff2(xx, yy)
 
 
-def plot2(ax, ff1, ff2):
-    x = np.arange(-1, 1, 0.0001)
-    y1 = np.sqrt(1 - np.power(x, 2))
-    y2 = -y1
-    tx1 = ff1(x, y1)
-    ty1 = ff2(x, y1)
-    tx2 = ff1(x, y2)
-    ty2 = ff2(x, y2)
-    ax.plot(tx1, ty1)
-    ax.plot(tx2, ty2)
-    ax.axis('equal')
-    ax.grid()
-
-
-def main():
+def plot_contours():
     x = np.arange(-1, 1, 0.1)
     y = np.arange(-1, 1, 0.1)
     l = 0.5
     xx, yy = np.meshgrid(x, y, sparse=True)
-    z1 = zz(xx, yy, l, f1, f2)
-    z2 = zz(xx, yy, l, f2, f3)
-    z3 = zz(xx, yy, l, f1, f3)
+    z1 = zz(xx, yy, l, F1, F2)
+    z2 = zz(xx, yy, l, F2, F3)
+    z3 = zz(xx, yy, l, F1, F3)
     f, xarr = plt.subplots(2, 2)
     xarr[0, 0].contourf(x, y, z1)
     xarr[0, 1].contourf(x, y, z2)
@@ -52,11 +37,9 @@ def main():
     plt.show()
 
 
-def plot_f1f2(ff1, ff2):
+def plot_f1f2(ff1, ff2, plot_geometry=False):
     x = np.arange(-1, 1, 0.0001)
-    print(x[0], x[-1])
     y1 = np.sqrt(1 - np.power(x, 2))
-    print(y1[-1])
     y2 = -y1
     f, xarr = plt.subplots(1, 2)
 
@@ -131,77 +114,61 @@ def plot_f1f2(ff1, ff2):
     #
     # xarr[1].plot(xxn, yyn, 'k', label='front pareto')
 
-    # xval = 0.5
-    # bound = np.sqrt(1 - np.power(xval, 2))
-    #
-    # test1x = np.arange(-bound, bound, 0.0001)
-    # test1y = np.ones(len(test1x)) * (-0.5)
-    # test1f1 = ff1(test1x, test1y)
-    # test1f2 = ff2(test1x, test1y)
-    #
-    # xarr[0].plot(test1x, test1y, 'r', label='y = 0.5')
-    # xarr[1].plot(test1f1, test1f2, 'r')
-    #
-    # test2x = test1x
-    # test2y = -1 * test1y
-    # test2f1 = ff1(test2x, test2y)
-    # test2f2 = ff2(test2x, test2y)
-    #
-    # xarr[0].plot(test2x, test2y, 'g', label='y = -0.5')
-    # xarr[1].plot(test2f1, test2f2, 'g')
-    #
-    # test3x = test1y
-    # test3y = test1x
-    # test3f1 = ff1(test3x, test3y)
-    # test3f2 = ff2(test3x, test3y)
-    #
-    # xarr[0].plot(test3x, test3y, 'b', label='x = 0.5')
-    # xarr[1].plot(test3f1, test3f2, 'b')
-    #
-    # test4x = -1 * test3x
-    # test4y = test3y
-    # test4f1 = ff1(test4x, test4y)
-    # test4f2 = ff2(test4x, test4y)
-    #
-    # xarr[0].plot(test4x, test4y, 'c', label='x = -0.5')
-    # xarr[1].plot(test4f1, test4f2, 'c')
-    #
-    # test5x = np.arange(-1, 1, 0.0001)
-    # test5y = np.zeros(len(test5x))
-    # test5f1 = ff1(test5x, test5y)
-    # test5f2 = ff2(test5x, test5y)
-    #
-    # xarr[0].plot(test5x, test5y, 'm', label='y = 0')
-    # xarr[1].plot(test5f1, test5f2, 'm', label='y = 0')
-    #
-    # test6x = test5y
-    # test6y = test5x
-    # test6f1 = ff1(test6x, test6y)
-    # test6f2 = ff2(test6x, test6y)
-    #
-    # xarr[0].plot(test6x, test6y, 'y', label='x = 0')
-    # xarr[1].plot(test6f1, test6f2, 'y')
+    if plot_geometry:
+        xval = 0.5
+        bound = np.sqrt(1 - np.power(xval, 2))
 
-    # xarr[0].legend()
+        test1x = np.arange(-bound, bound, 0.0001)
+        test1y = np.ones(len(test1x)) * (-0.5)
+        test1f1 = ff1(test1x, test1y)
+        test1f2 = ff2(test1x, test1y)
+
+        xarr[0].plot(test1x, test1y, 'r', label='y = 0.5')
+        xarr[1].plot(test1f1, test1f2, 'r')
+
+        test2x = test1x
+        test2y = -1 * test1y
+        test2f1 = ff1(test2x, test2y)
+        test2f2 = ff2(test2x, test2y)
+
+        xarr[0].plot(test2x, test2y, 'g', label='y = -0.5')
+        xarr[1].plot(test2f1, test2f2, 'g')
+
+        test3x = test1y
+        test3y = test1x
+        test3f1 = ff1(test3x, test3y)
+        test3f2 = ff2(test3x, test3y)
+
+        xarr[0].plot(test3x, test3y, 'b', label='x = 0.5')
+        xarr[1].plot(test3f1, test3f2, 'b')
+
+        test4x = -1 * test3x
+        test4y = test3y
+        test4f1 = ff1(test4x, test4y)
+        test4f2 = ff2(test4x, test4y)
+
+        xarr[0].plot(test4x, test4y, 'c', label='x = -0.5')
+        xarr[1].plot(test4f1, test4f2, 'c')
+
+        test5x = np.arange(-1, 1, 0.0001)
+        test5y = np.zeros(len(test5x))
+        test5f1 = ff1(test5x, test5y)
+        test5f2 = ff2(test5x, test5y)
+
+        xarr[0].plot(test5x, test5y, 'm', label='y = 0')
+        xarr[1].plot(test5f1, test5f2, 'm', label='y = 0')
+
+        test6x = test5y
+        test6y = test5x
+        test6f1 = ff1(test6x, test6y)
+        test6f2 = ff2(test6x, test6y)
+
+        xarr[0].plot(test6x, test6y, 'y', label='x = 0')
+        xarr[1].plot(test6f1, test6f2, 'y')
+
+        xarr[0].legend()
+
     xarr[1].legend()
-    plt.show()
-
-
-def test():
-    x = np.linspace(0, 4)
-    y = np.linspace(0, 1)
-
-    def f(x, y):
-        return y * np.sin(x)
-
-    X, Y = np.meshgrid(x, y)
-    Z = np.zeros((50, 50))
-
-    for i in range(50):
-        for j in range(50):
-            Z[i, j] = f(X[i, j], Y[i, j])
-
-    plt.pcolor(X, Y, Z)
     plt.show()
 
 
@@ -227,20 +194,25 @@ def mytest():
     ax[0, 0].grid()
 
     ax[0, 1].set(xlabel='f1', ylabel='f2', aspect=1.0)
-    ax[0, 1].scatter(f1(x[inside], y[inside]), f2(x[inside], y[inside]))
+    ax[0, 1].scatter(F1(x[inside], y[inside]), F2(x[inside], y[inside]))
     ax[0, 1].grid()
 
     ax[1, 0].set(xlabel='f2', ylabel='f3', aspect=1.0)
-    ax[1, 0].scatter(f2(x[inside], y[inside]), f3(x[inside], y[inside]))
+    ax[1, 0].scatter(F2(x[inside], y[inside]), F3(x[inside], y[inside]))
     ax[1, 0].grid()
 
     ax[1, 1].set(xlabel='f1', ylabel='f3', aspect=1.0)
-    ax[1, 1].scatter(f1(x[inside], y[inside]), f3(x[inside], y[inside]))
+    ax[1, 1].scatter(F1(x[inside], y[inside]), F3(x[inside], y[inside]))
     ax[1, 1].grid()
 
     plt.show()
 
-mytest()
-plot_f1f2(f1, f2)
-plot_f1f2(f2, f3)
-plot_f1f2(f1, f3)
+
+def main():
+    mytest()
+    plot_f1f2(F1, F2, plot_geometry=True)
+    plot_f1f2(F2, F3)
+    plot_f1f2(F1, F3)
+
+if __name__ == '__main__':
+    main()
