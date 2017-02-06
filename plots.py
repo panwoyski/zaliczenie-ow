@@ -65,7 +65,7 @@ def plot_f1f2(ff1, ff2, plot_geometry=False):
     c1y = tx1[yind1], ty1[yind1]
     c2y = tx2[yind2], ty2[yind2]
     cymin = c1y if c1y[1] < c2y[1] else c2y
-    xarr[1].plot(cymin[0], cymin[1], 'ok', label='cy')
+    xarr[1].plot(cymin[0], cymin[1], 'ok', label='Brzeg frontu pareto dla minF2')
 
     xind1 = tx1.argmin()
     xind2 = tx2.argmin()
@@ -74,7 +74,7 @@ def plot_f1f2(ff1, ff2, plot_geometry=False):
     c2x = tx2[xind2], ty2[xind2]
 
     cxmin = c1x if c1x[0] < c2x[0] else c2x
-    xarr[1].plot(cxmin[0], cxmin[1], 'ok', label='cx')
+    xarr[1].plot(cxmin[0], cxmin[1], 'ok', label='Brzeg frontu pareto dla minF1')
 
     zenit = cxmin[0], cymin[1]
     nadir = cymin[0], cxmin[1]
@@ -173,7 +173,7 @@ def plot_f1f2(ff1, ff2, plot_geometry=False):
 
 
 def mytest():
-    N = 100
+    N = 1000
     x_start, x_end = -1.0, 1.0
     y_start, y_end = -1.0, 1.0
 
