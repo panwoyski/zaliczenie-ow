@@ -73,15 +73,8 @@ def plot_f1f2(ff1, ff2):
     xarr[1].plot(tx2, ty2)
     xarr[1].axis('equal')
     xarr[1].grid()
-
-    tx1m = tx1.min()
-    tx2m = tx2.min()
-
-    ty1m = ty1.min()
-    ty2m = ty2.min()
-
-    f1min = min(tx1m, tx2m)
-    f2min = min(ty1m, ty2m)
+    xarr[0].set(xlabel='X', ylabel='Y')
+    xarr[1].set(xlabel='%s' % ff1.__name__, ylabel='%s' % ff2.__name__)
 
     yind1 = ty1.argmin()
     yind2 = ty2.argmin()
@@ -189,7 +182,7 @@ def plot_f1f2(ff1, ff2):
     # xarr[0].plot(test6x, test6y, 'y', label='x = 0')
     # xarr[1].plot(test6f1, test6f2, 'y')
 
-    xarr[0].legend()
+    # xarr[0].legend()
     xarr[1].legend()
     plt.show()
 
@@ -247,7 +240,7 @@ def mytest():
 
     plt.show()
 
-# mytest()
+mytest()
 plot_f1f2(f1, f2)
 plot_f1f2(f2, f3)
 plot_f1f2(f1, f3)
