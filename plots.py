@@ -237,16 +237,44 @@ def generate_xy_params(density):
     return np.vstack((base_points1, base_points2))
 
 
+def intersect_2d_array(a, b):
+    temp_arr = np.array([x for x in set(tuple(x) for x in a) & set(tuple(x) for x in b)])
+    return sort_by_cartesian(temp_arr, (0, -1))
+
+
+def plot_summary(f1f2d, f2f3d, f1f3d):
+    f1f2 = f1f2d['xy_front']
+    f2f3 = f2f3d['xy_front']
+    f1f3 = f1f3d['xy_front']
+
+    f1f2_n_f2f3 = intersect_2d_array(f1f2, f2f3)
+    f2f3_n_f1f3 = intersect_2d_array(f2f3, f1f3)
+    f1f2_n_f1f3 = intersect_2d_array(f1f2, f1f3)
+
+    plot_points(plt, f1f2d['xy_points'])
+    plot_points(plt, f1f2, '-', linewidth=4, label='f1f2')
+    plot_points(plt, f2f3, '-', linewidth=4, label='f2f3')
+    plot_points(plt, f1f3, '-', linewidth=4, label='f1f3')
+    plot_points(plt, f1f2_n_f1f3, '--y', linewidth=3, label='f1f2 n f1f3')
+    plot_points(plt, f1f2_n_f2f3, '--r', linewidth=3, label='f1f2 n f2f3')
+    plot_points(plt, f2f3_n_f1f3, '--k', linewidth=3, label='f2f3 n f1f3')
+
+    plt.axis('equal')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+
 def main():
     xy_points = generate_xy_params(0.0001)
     # mytest()
     f1f2_dict = generate_parameters(xy_points, F1, F2)
     plot_f1f2(f1f2_dict)
     f2f3_dict = generate_parameters(xy_points, F2, F3)
-    plot_f1f2(f2f3_dict, plot_geometry=True)
+    plot_f1f2(f2f3_dict)
     f1f3_dict = generate_parameters(xy_points, F1, F3)
     plot_f1f2(f1f3_dict)
-
+    plot_summary(f1f2_dict, f2f3_dict, f1f3_dict)
 
 if __name__ == '__main__':
     main()
