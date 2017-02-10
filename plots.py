@@ -18,7 +18,7 @@ def F4(x, y):
     return -x - (y ** 2)
 
 
-def mytest():
+def plot_full_shapes():
     N = 1000
     x_start, x_end = -1.0, 1.0
     y_start, y_end = -1.0, 1.0
@@ -33,35 +33,39 @@ def mytest():
 
     inside = r <= radius
 
+    plt.figure()
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.axis('equal')
     plt.scatter(x[inside], y[inside])
+    plt.title('Zbior U {(x,y): x^2 + y^2 <= 1}')
     plt.grid()
-    plt.show()
 
+    plt.figure()
+    plt.title('Obraz zbioru U w (F1, F2)')
     plt.xlabel('f1')
     plt.ylabel('f2')
     plt.axis('equal')
     plt.scatter(F1(x[inside], y[inside]), F2(x[inside], y[inside]))
     plt.grid()
-    plt.show()
 
+    plt.figure()
+    plt.title('Obraz zbioru U w (F2, F3)')
     plt.xlabel('f2')
     plt.ylabel('f3')
     plt.axis('equal')
     plt.scatter(F2(x[inside], y[inside]), F3(x[inside], y[inside]))
     plt.grid()
-    plt.show()
 
+    plt.figure()
+    plt.title('Obraz zbioru U w (F1, F3)')
     plt.xlabel('f1')
     plt.ylabel('f3')
     plt.axis('equal')
     plt.scatter(F1(x[inside], y[inside]), F3(x[inside], y[inside]))
     plt.grid()
+
     plt.show()
-
-
 
 
 def sort_by_cartesian(arr, point):
@@ -159,11 +163,14 @@ def plot_f1f2(params_dict, plot_geometry=False):
     plot_points(plt, xy_points)
     plt.axis('equal')
     plt.grid()
+    plt.title('Front paretu na brzegu zbioru U dla przestrzeni (%s, %s)' % (ff1.__name__, ff2.__name__))
     plt.xlabel('X')
     plt.ylabel('Y')
     plot_points(plt, xy_front, 'k', linewidth=3, label='front pareto')
+    plt.legend()
 
     plt.figure(2)
+    plt.title('Front pareto na obrazie zbioru U w przestrzeni (%s, %s)' % (ff1.__name__, ff2.__name__))
     plot_points(plt, f1f2_points)
     plt.xlabel(ff1.__name__)
     plt.ylabel(ff2.__name__)
@@ -174,11 +181,11 @@ def plot_f1f2(params_dict, plot_geometry=False):
     plt.plot(cymin[0], cymin[1], 'ok')
     plt.plot(zenit[0], zenit[1], '^c', label='zenit')
     plt.plot(nadir[0], nadir[1], 'xm', label='nadir')
-    plt.legend()
 
     add_square_boundary_to_plot(plt, zenit, nadir, '--', color='grey')
 
     plot_points(plt, f1f2_front, 'k', linewidth=3, label='front pareto')
+    plt.legend()
 
     # if plot_geometry:
     #     geometry_plot(xarr, ff1, ff2)
@@ -273,6 +280,7 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
     plot_points(plt, f1f2_n_f2f3, '-k', linewidth=3, label='f1f2 n f2f3')
     # plot_points(plt, f2f3_n_f1f3, '--k', linewidth=3, label='f2f3 n f1f3')
 
+    plt.title('Zlozenie frontow pareto dla par (F1, F2), (F2,F3), (F1, F3)')
     plt.axis('equal')
     plt.xlabel('X')
     plt.ylabel('Y')
@@ -283,7 +291,7 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
 
 def main():
     xy_points = generate_xy_params(0.0001)
-    mytest()
+    # plot_full_shapes()
     f1f2_dict = generate_parameters(xy_points, F1, F2)
     plot_f1f2(f1f2_dict)
     f2f3_dict = generate_parameters(xy_points, F2, F3)
