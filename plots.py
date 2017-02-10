@@ -33,25 +33,35 @@ def mytest():
 
     inside = r <= radius
 
-    fig, ax = plt.subplots(2, 2)
-    ax[0, 0].set(xlabel='X', ylabel='Y', aspect=1.0)
-
-    ax[0, 0].scatter(x[inside], y[inside])
-    ax[0, 0].grid()
-
-    ax[0, 1].set(xlabel='f1', ylabel='f2', aspect=1.0)
-    ax[0, 1].scatter(F1(x[inside], y[inside]), F2(x[inside], y[inside]))
-    ax[0, 1].grid()
-
-    ax[1, 0].set(xlabel='f2', ylabel='f3', aspect=1.0)
-    ax[1, 0].scatter(F2(x[inside], y[inside]), F3(x[inside], y[inside]))
-    ax[1, 0].grid()
-
-    ax[1, 1].set(xlabel='f1', ylabel='f3', aspect=1.0)
-    ax[1, 1].scatter(F1(x[inside], y[inside]), F3(x[inside], y[inside]))
-    ax[1, 1].grid()
-
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.axis('equal')
+    plt.scatter(x[inside], y[inside])
+    plt.grid()
     plt.show()
+
+    plt.xlabel('f1')
+    plt.ylabel('f2')
+    plt.axis('equal')
+    plt.scatter(F1(x[inside], y[inside]), F2(x[inside], y[inside]))
+    plt.grid()
+    plt.show()
+
+    plt.xlabel('f2')
+    plt.ylabel('f3')
+    plt.axis('equal')
+    plt.scatter(F2(x[inside], y[inside]), F3(x[inside], y[inside]))
+    plt.grid()
+    plt.show()
+
+    plt.xlabel('f1')
+    plt.ylabel('f3')
+    plt.axis('equal')
+    plt.scatter(F1(x[inside], y[inside]), F3(x[inside], y[inside]))
+    plt.grid()
+    plt.show()
+
+
 
 
 def sort_by_cartesian(arr, point):
@@ -267,13 +277,13 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
 
 def main():
     xy_points = generate_xy_params(0.0001)
-    # mytest()
+    mytest()
     f1f2_dict = generate_parameters(xy_points, F1, F2)
-    # plot_f1f2(f1f2_dict)
+    plot_f1f2(f1f2_dict)
     f2f3_dict = generate_parameters(xy_points, F2, F3)
-    # plot_f1f2(f2f3_dict)
+    plot_f1f2(f2f3_dict)
     f1f3_dict = generate_parameters(xy_points, F1, F3)
-    # plot_f1f2(f1f3_dict)
+    plot_f1f2(f1f3_dict)
     plot_summary(f1f2_dict, f2f3_dict, f1f3_dict)
 
 if __name__ == '__main__':
