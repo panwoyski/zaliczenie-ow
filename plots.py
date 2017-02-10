@@ -291,7 +291,7 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
 
 def main():
     xy_points = generate_xy_params(0.0001)
-    # plot_full_shapes()
+    plot_full_shapes()
     f1f2_dict = generate_parameters(xy_points, F1, F2)
     plot_f1f2(f1f2_dict)
     f2f3_dict = generate_parameters(xy_points, F2, F3)
@@ -299,6 +299,17 @@ def main():
     f1f3_dict = generate_parameters(xy_points, F1, F3)
     plot_f1f2(f1f3_dict)
     plot_summary(f1f2_dict, f2f3_dict, f1f3_dict)
+
+    np.savetxt('xy_points.csv', xy_points, delimiter=',')
+
+    np.savetxt('xy_f1f2_pareto.csv', f1f2_dict['xy_front'], delimiter=',')
+    np.savetxt('ff_f1f2_pareto.csv', f1f2_dict['f1f2_front'], delimiter=',')
+
+    np.savetxt('xy_f2f3_pareto.csv', f2f3_dict['xy_front'], delimiter=',')
+    np.savetxt('ff_f2f3_pareto.csv', f2f3_dict['f1f2_front'], delimiter=',')
+
+    np.savetxt('xy_f1f3_pareto.csv', f1f3_dict['xy_front'], delimiter=',')
+    np.savetxt('ff_f1f3_pareto.csv', f1f3_dict['f1f2_front'], delimiter=',')
 
 if __name__ == '__main__':
     main()
