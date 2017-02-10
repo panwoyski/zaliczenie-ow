@@ -155,29 +155,33 @@ def plot_f1f2(params_dict, plot_geometry=False):
     ff1 = params_dict['ff1']
     ff2 = params_dict['ff2']
 
-    f, xarr = plt.subplots(1, 2)
+    plt.figure(1)
+    plot_points(plt, xy_points)
+    plt.axis('equal')
+    plt.grid()
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plot_points(plt, xy_front, 'k', linewidth=3, label='front pareto')
 
-    plot_points(xarr[0], xy_points)
-    xarr[0].axis('equal')
-    xarr[0].grid()
+    plt.figure(2)
+    plot_points(plt, f1f2_points)
+    plt.xlabel(ff1.__name__)
+    plt.ylabel(ff2.__name__)
+    plt.axis('equal')
+    plt.grid()
 
-    plot_points(xarr[1], f1f2_points)
-    xarr[1].axis('equal')
-    xarr[1].grid()
+    plt.plot(cxmin[0], cxmin[1], 'ok')
+    plt.plot(cymin[0], cymin[1], 'ok')
+    plt.plot(zenit[0], zenit[1], '^c', label='zenit')
+    plt.plot(nadir[0], nadir[1], 'xm', label='nadir')
+    plt.legend()
 
-    xarr[1].plot(cxmin[0], cxmin[1], 'ok')
-    xarr[1].plot(cymin[0], cymin[1], 'ok')
-    xarr[1].plot(zenit[0], zenit[1], '^c', label='zenit')
-    xarr[1].plot(nadir[0], nadir[1], 'xm', label='nadir')
-    xarr[1].legend()
+    add_square_boundary_to_plot(plt, zenit, nadir, '--', color='grey')
 
-    add_square_boundary_to_plot(xarr[1], zenit, nadir, '--', color='grey')
+    plot_points(plt, f1f2_front, 'k', linewidth=3, label='front pareto')
 
-    plot_points(xarr[0], xy_front, 'k', linewidth=3)
-    plot_points(xarr[1], f1f2_front, 'k', linewidth=3)
-
-    if plot_geometry:
-        geometry_plot(xarr, ff1, ff2)
+    # if plot_geometry:
+    #     geometry_plot(xarr, ff1, ff2)
 
     plt.show()
 
@@ -270,6 +274,8 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
     # plot_points(plt, f2f3_n_f1f3, '--k', linewidth=3, label='f2f3 n f1f3')
 
     plt.axis('equal')
+    plt.xlabel('X')
+    plt.ylabel('Y')
     plt.legend()
     plt.grid()
     plt.show()
