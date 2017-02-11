@@ -18,7 +18,7 @@ def F4(x, y):
     return -x - (y ** 2)
 
 
-def plot_full_shapes():
+def plot_full_shapes(pairs_list):
     N = 1000
     x_start, x_end = -1.0, 1.0
     y_start, y_end = -1.0, 1.0
@@ -41,34 +41,37 @@ def plot_full_shapes():
     plt.title('Zbior U {(x,y): x^2 + y^2 <= 1}')
     plt.grid()
 
-    plt.figure()
-    plt.title('Obraz zbioru U w (F1, F2)')
-    plt.xlabel('f1')
-    plt.ylabel('f2')
-    plt.axis('equal')
-    plt.scatter(F1(x[inside], y[inside]), F2(x[inside], y[inside]))
-    plt.grid()
+    for ff1, ff2 in pairs_list:
+        plt.figure()
+        plt.title('Obraz zbioru U w (%s, %s)' % (ff1.__name__, ff2.__name__))
+        plt.xlabel(ff1.__name__)
+        plt.ylabel(ff2.__name__)
+        plt.axis('equal')
+        plt.scatter(ff1(x[inside], y[inside]), ff2(x[inside], y[inside]))
+        plt.grid()
 
-    plt.figure()
-    plt.title('Obraz zbioru U w (F2, F3)')
-    plt.xlabel('f2')
-    plt.ylabel('f3')
-    plt.axis('equal')
-    plt.scatter(F2(x[inside], y[inside]), F3(x[inside], y[inside]))
-    plt.grid()
-
-    plt.figure()
-    plt.title('Obraz zbioru U w (F1, F3)')
-    plt.xlabel('f1')
-    plt.ylabel('f3')
-    plt.axis('equal')
-    plt.scatter(F1(x[inside], y[inside]), F3(x[inside], y[inside]))
-    plt.grid()
+    # plt.figure()
+    # plt.title('Obraz zbioru U w (F2, F3)')
+    # plt.xlabel('f2')
+    # plt.ylabel('f3')
+    # plt.axis('equal')
+    # plt.scatter(ff2(x[inside], y[inside]), ff3(x[inside], y[inside]))
+    # plt.grid()
+    #
+    # plt.figure()
+    # plt.title('Obraz zbioru U w (F1, F3)')
+    # plt.xlabel('f1')
+    # plt.ylabel('f3')
+    # plt.axis('equal')
+    # plt.scatter(F1(x[inside], y[inside]), F3(x[inside], y[inside]))
+    # plt.grid()
 
     plt.show()
 
 
 def sort_by_cartesian(arr, point):
+    if not len(arr):
+        return arr
     temp_arr = arr - point
     sort = np.sum(np.power(temp_arr, 2), axis=1)
     return arr[sort.argsort()]
@@ -85,8 +88,16 @@ def transform_by_func(points, ff1, ff2):
 
 
 def find_significant(points):
-    f1min = points[points[:, 0].argmin()]
-    f2min = points[points[:, 1].argmin()]
+    xf1minval = points[:, 0].min()
+    suspect1_indices = np.where(points[:, 0] == xf1minval)
+    yf1minval = points[:, 1][suspect1_indices].min()
+    f1min = xf1minval, yf1minval
+
+    yf2minval = points[:, 1].min()
+    suspect2_indices = np.where(points[:, 1] == yf2minval)
+    xf2minval = points[:, 0][suspect2_indices].min()
+    f2min = xf2minval, yf2minval
+
     nadir = f2min[0], f1min[1]
     zenit = f1min[0], f2min[1]
     return zenit, nadir, f1min, f2min
@@ -123,7 +134,7 @@ def get_pareto_front(points, zenit, nadir):
 def get_front_in_xy(xy_points, ff1, ff2, zenit, nadir):
     temp_list = [(x, y) for x, y in xy_points if zenit[0] <= ff1(x, y) <= nadir[0] and zenit[1] <= ff2(x, y) <= nadir[1]]
     temp2_list = np.asarray(temp_list)
-    return sort_by_cartesian(temp2_list, (0, 1))
+    return sort_by_cartesian(temp2_list, (1, 0))
 
 
 def generate_parameters(xy_points, ff1, ff2):
@@ -147,7 +158,7 @@ def generate_parameters(xy_points, ff1, ff2):
     }
 
 
-def plot_f1f2(params_dict, plot_geometry=False):
+def plot_f1f2(params_dict):
     xy_points = params_dict['xy_points']
     f1f2_points = params_dict['f1f2_points']
     xy_front = params_dict['xy_front']
@@ -253,8 +264,8 @@ def generate_xy_params(density):
     y2 = np.sqrt(1 - np.power(x, 2))
     y1 = -y2
 
-    base_points1 = np.vstack((x, y1)).T
-    base_points2 = np.flipud(np.vstack((x, y2)).T)
+    base_points1 = np.vstack((x, y2)).T
+    base_points2 = np.flipud(np.vstack((x, y1)).T)
     return np.vstack((base_points1, base_points2))
 
 
@@ -267,20 +278,25 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
     f1f2 = f1f2d['xy_front']
     f2f3 = f2f3d['xy_front']
     f1f3 = f1f3d['xy_front']
+    print(f1f2.shape, f2f3.shape, f1f3.shape)
 
     f1f2_n_f2f3 = intersect_2d_array(f1f2, f2f3)
     f2f3_n_f1f3 = intersect_2d_array(f2f3, f1f3)
     f1f2_n_f1f3 = intersect_2d_array(f1f2, f1f3)
 
     plot_points(plt, f1f2d['xy_points'])
-    # plot_points(plt, f1f2, '-', linewidth=4, label='f1f2')
-    # plot_points(plt, f2f3, '-c', linewidth=4, label='f2f3')
-    # plot_points(plt, f1f3, '-m', linewidth=4, label='f1f3')
-    plot_points(plt, f1f2_n_f1f3, '-y', linewidth=3, label='f1f2 n f1f3')
-    plot_points(plt, f1f2_n_f2f3, '-k', linewidth=3, label='f1f2 n f2f3')
-    # plot_points(plt, f2f3_n_f1f3, '--k', linewidth=3, label='f2f3 n f1f3')
+    plot_points(plt, f1f2, '-', linewidth=4, label='f1f4')
+    plot_points(plt, f2f3, '-', linewidth=4, label='f2f4')
+    plot_points(plt, f1f3, '-', linewidth=4, label='f3f4')
+    if len(f1f2_n_f1f3):
+        plot_points(plt, f1f2_n_f1f3, '-', linewidth=3, label='f1f4 n f2f4')
+    if len(f1f2_n_f2f3):
+        plot_points(plt, f1f2_n_f2f3, '-', linewidth=3, label='f1f4 n f3f4')
+    if len(f2f3_n_f1f3):
+        plot_points(plt, f2f3_n_f1f3, 'ok', linewidth=3, label='f2f4 n f3f4')
+        print(len(f2f3_n_f1f3))
 
-    plt.title('Zlozenie frontow pareto dla par (F1, F2), (F2,F3), (F1, F3)')
+    plt.title('Zlozenie frontow pareto dla par (F1, F4), (F2, F4), (F3, F4)')
     plt.axis('equal')
     plt.xlabel('X')
     plt.ylabel('Y')
@@ -291,25 +307,25 @@ def plot_summary(f1f2d, f2f3d, f1f3d):
 
 def main():
     xy_points = generate_xy_params(0.0001)
-    plot_full_shapes()
-    f1f2_dict = generate_parameters(xy_points, F1, F2)
-    plot_f1f2(f1f2_dict)
-    f2f3_dict = generate_parameters(xy_points, F2, F3)
-    plot_f1f2(f2f3_dict)
-    f1f3_dict = generate_parameters(xy_points, F1, F3)
-    plot_f1f2(f1f3_dict)
-    plot_summary(f1f2_dict, f2f3_dict, f1f3_dict)
+    # plot_full_shapes([(F1, F4), (F2, F4), (F3, F4)])
+    f1f4_dict = generate_parameters(xy_points, F1, F4)
+    plot_f1f2(f1f4_dict)
+    f2f4_dict = generate_parameters(xy_points, F2, F4)
+    plot_f1f2(f2f4_dict)
+    f3f4_dict = generate_parameters(xy_points, F3, F4)
+    plot_f1f2(f3f4_dict)
+    plot_summary(f1f4_dict, f2f4_dict, f3f4_dict)
 
     np.savetxt('xy_points.csv', xy_points, delimiter=',')
 
-    np.savetxt('xy_f1f2_pareto.csv', f1f2_dict['xy_front'], delimiter=',')
-    np.savetxt('ff_f1f2_pareto.csv', f1f2_dict['f1f2_front'], delimiter=',')
+    np.savetxt('xy_f1f4_pareto.csv', f1f4_dict['xy_front'], delimiter=',')
+    np.savetxt('ff_f1f4_pareto.csv', f1f4_dict['f1f2_front'], delimiter=',')
 
-    np.savetxt('xy_f2f3_pareto.csv', f2f3_dict['xy_front'], delimiter=',')
-    np.savetxt('ff_f2f3_pareto.csv', f2f3_dict['f1f2_front'], delimiter=',')
+    np.savetxt('xy_f2f4_pareto.csv', f2f4_dict['xy_front'], delimiter=',')
+    np.savetxt('ff_f2f4_pareto.csv', f2f4_dict['f1f2_front'], delimiter=',')
 
-    np.savetxt('xy_f1f3_pareto.csv', f1f3_dict['xy_front'], delimiter=',')
-    np.savetxt('ff_f1f3_pareto.csv', f1f3_dict['f1f2_front'], delimiter=',')
+    np.savetxt('xy_f3f4_pareto.csv', f3f4_dict['xy_front'], delimiter=',')
+    np.savetxt('ff_f3f4_pareto.csv', f3f4_dict['f1f2_front'], delimiter=',')
 
 if __name__ == '__main__':
     main()
